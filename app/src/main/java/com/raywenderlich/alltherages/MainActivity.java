@@ -24,7 +24,6 @@ package com.raywenderlich.alltherages;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements RageComicListFragment.OnRageComicSelected {
@@ -44,6 +43,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRageComicSelected(int imageResId, String name, String description, String url) {
-        Toast.makeText(this, "Hey, you selected " + name + "!", Toast.LENGTH_SHORT).show();
+        final RageComicDetailsFragment detailsFragment =
+                RageComicDetailsFragment.newInstance(imageResId, name, description, url);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.root_layout, detailsFragment, "rageComicDetails")
+                .addToBackStack(null)
+                .commit();
     }
 }
