@@ -45,6 +45,8 @@ public class RageComicListFragment extends Fragment {
     private String[] mDescriptions;
     private String[] mUrls;
 
+    private OnRageComicSelected mListener;
+
     public static RageComicListFragment newInstance() {
         return new RageComicListFragment();
     }
@@ -56,6 +58,12 @@ public class RageComicListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        if (context instanceof OnRageComicSelected) {
+            mListener = (OnRageComicSelected) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement OnRageComicSelected.");
+        }
 
         // Get rage face names and descriptions.
         final Resources resources = context.getResources();
@@ -106,6 +114,13 @@ public class RageComicListFragment extends Fragment {
             final String description = mDescriptions[position];
             final String url = mUrls[position];
             viewHolder.setData(imageResId, name);
+
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onRageComicSelected(imageResId, name, description, url);
+                }
+            });
         }
 
         @Override
@@ -132,4 +147,10 @@ public class RageComicListFragment extends Fragment {
             mNameTextView.setText(name);
         }
     }
+
+    public interface OnRageComicSelected {
+        void onRageComicSelected(int imageResId, String name,
+                                 String description, String url);
+    }
+
 }
